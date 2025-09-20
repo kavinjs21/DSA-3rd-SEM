@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Response Allocation System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+--font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+--font-mono: 'Roboto Mono', monospace;
+--bg-color: #f4f7f6;
+--panel-bg: #ffffff;
+--text-color: #222222;
+--text-color-light: #555555;
+--border-color: #e0e0e0;
+--list-item-bg: #fdfdfd;
+--accent-color: #00a896;
+--accent-hover: #007a6e;
+--dispatch-color: #00a896;
+--dispatch-hover: #007a6e;
+--available-color: #00b894;
+--dispatched-color: #f0932b;
+}
+body.dark-mode {
+--bg-color: #0f172a;
+--panel-bg: #1e293b;
+--text-color: #f0f0f0;
+--text-color-light: #a0aec0;
+--border-color: #334155;
+--list-item-bg: #293548;
+}
+html {
+scroll-behavior: smooth;
+scroll-padding-top: 5rem;
+}
+body {
+font-family: var(--font-sans);
+margin: 0;
+background-color: var(--bg-color);
+color: var(--text-color);
+transition: background-color 0.2s, color 0.2s;
+}
+h1, h2, h3 {
+color: var(--text-color);
+font-weight: 700;
+}
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; text-align: center; margin-bottom: 2rem; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+nav {
+background-color: #0a0f18;
+padding: 1rem 2rem;
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+align-items: center;
+position: sticky;
+top: 0;
+z-index: 100;
+border-bottom: 1px solid var(--border-color);
+}
+nav .logo {
+font-size: 1.5rem;
+font-weight: 700;
+color: white;
+}
+nav .nav-links {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+nav .nav-links a {
+color: white;
+text-decoration: none;
+padding: 0.5rem 1rem;
+border-radius: 5px;
+transition: background-color 0.2s;
+white-space: nowrap;
+font-weight: 600;
+}
+nav .nav-links a:hover {
+background-color: #555;
+}
+.theme-switch {
+position: relative;
+display: inline-block;
+width: 50px;
+height: 28px;
+}
+.theme-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0; left: 0; right: 0; bottom: 0;
+background-color: #ccc;
+transition: .3s;
+border-radius: 28px;
+}
+.slider:before {
+position: absolute;
+content: "";
+height: 20px; width: 20px;
+left: 4px; bottom: 4px;
+background-color: white;
+transition: .3s;
+border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent-color); }
+input:checked + .slider:before { transform: translateX(22px); }
+.section-container {
+max-width: 960px;
+margin: 3rem auto;
+padding: 2.5rem;
+background-color: var(--panel-bg);
+border: 1px solid var(--border-color);
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.section-container-hero {
+max-width: none;
+margin: 0;
+padding: 5rem 2rem;
+text-align: center;
+border-radius: 0;
+border: none;
+box-shadow: none;
+background-color: var(--panel-bg);
+border-bottom: 1px solid var(--border-color);
+}
+.hero h1 { margin-top: 0; }
+.hero p {
+font-size: 1.2rem;
+color: var(--text-color-light);
+margin-bottom: 2.5rem;
+}
+.button-link {
+background-color: var(--accent-color);
+color: white;
+padding: 1rem 2.5rem;
+text-decoration: none;
+border-radius: 8px;
+font-size: 1.1rem;
+font-weight: 700;
+transition: background-color 0.2s;
+}
+.button-link:hover { background-color: var(--accent-hover); }
+.features-grid {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+}
+.feature-card {
+flex: 1;
+min-width: 250px;
+background-color: var(--list-item-bg);
+border: 1px solid var(--border-color);
+border-radius: 8px;
+padding: 25px;
+text-align: center;
+}
+.feature-card .icon {
+font-size: 3rem;
+margin-bottom: 1rem;
+}
+#about h1, #how-it-works h1 {
+text-align: center;
+border-bottom: 2px solid var(--border-color);
+padding-bottom: 10px;
+margin-top: 0;
+}
+#about p, #how-it-works p {
+font-size: 1.1rem;
+line-height: 1.7;
+}
+#how-it-works ol {
+font-size: 1.1rem;
+line-height: 1.7;
+}
+#app {
+padding-top: 2rem;
+max-width: none;
+background-color: var(--bg-color);
+border: none;
+box-shadow: none;
+}
+#app h1 {
+text-align: center;
+font-size: 2.5rem;
+}
+.app-container {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+max-width: 1200px;
+margin: 0 auto 2rem auto;
+padding: 0 1rem; 
+}
+.panel {
+flex: 1;
+min-width: 320px;
+background-color: var(--panel-bg);
+border: 1px solid var(--border-color);
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+padding: 25px;
+transition: background-color 0.2s, border-color 0.2s;
+}
+form div { margin-bottom: 15px; }
+label {
+display: block;
+margin-bottom: 6px;
+font-weight: 600;
+color: var(--text-color-light);
+}
+input[type="text"],
+input[type="number"] {
+width: 100%;
+padding: 12px;
+border: 1px solid var(--border-color);
+border-radius: 6px;
+background-color: var(--bg-color);
+color: var(--text-color);
+font-size: 1em;
+font-family: var(--font-sans);
+box-sizing: border-box;
+}
+button {
+background-color: var(--accent-color);
+color: white;
+padding: 12px 18px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-size: 1em;
+font-weight: 700;
+width: 100%;
+transition: background-color 0.2s;
+}
+button:hover { background-color: var(--accent-hover); }
+#dispatch-btn {
+background-color: var(--dispatch-color);
+margin-bottom: 20px;
+}
+#dispatch-btn:hover { background-color: var(--dispatch-hover); }
+.status-list {
+list-style-type: none;
+padding-left: 0;
+margin: 0;
+max-height: 500px;
+overflow-y: auto;
+border: 1px solid var(--border-color);
+border-radius: 6px;
+padding: 10px;
+}
+.status-list li {
+background-color: var(--list-item-bg);
+padding: 12px;
+margin-bottom: 8px;
+border-radius: 4px;
+border: 1px solid var(--border-color);
+font-family: var(--font-mono);
+font-size: 0.95em;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.status-list li:last-child { margin-bottom: 0; }
+.unit-available { color: var(--available-color); font-weight: bold; }
+.unit-dispatched { color: var(--dispatched-color); font-weight: bold; }
+.incident-priority { font-weight: bold; min-width: 100px; }
+.incident-desc { flex-grow: 1; margin-left: 15px; }
+footer {
+text-align: center;
+padding: 2rem;
+margin-top: 2rem;
+background-color: var(--panel-bg);
+color: var(--text-color-light);
+border-top: 1px solid var(--border-color);
+}
+</style>
+</head>
+<body>
+<nav>
+<div class="logo">ERAS</div>
+<div class="nav-links">
+<a href="#home">Home</a>
+<a href="#features">Features</a>
+<a href="#about">About</a>
+<a href="#app">Launch App</a>
+<label class="theme-switch">
+<input type="checkbox" id="theme-toggle">
+<span class="slider"></span>
+</label>
+</div>
+</nav>
+<main id="home" class="section-container-hero hero">
+<h1>Emergency Response Allocation System</h1>
+<p>A web-based simulation for managing and dispatching emergency response units.</p>
+<a href="#app" class="button-link">Launch Dispatch App</a>
+</main>
+<section id="features" class="section-container">
+<h2>Features</h2>
+<div class="features-grid">
+<div class="feature-card">
+<div class="icon">🚀</div>
+<h3>Dynamic Priority</h3>
+<p>Incidents age over time, increasing their priority automatically. (sev*5 + vic*2 + time*0.1)</p>
+</div>
+<div class="feature-card">
+<div class="icon">⏱️</div>
+<h3>Real-Time Updates</h3>
+<p>The queue and unit lists update every 3 seconds, showing the latest priority scores.</p>
+</div>
+<div class="feature-card">
+<div class="icon">💾</div>
+<h3>Persistent Data</h3>
+<p>Your session is saved! All incidents and unit statuses are stored in your browser.</p>
+</div>
+</div>
+</section>
+<section id="about" class="section-container">
+<h1>About This Project</h1>
+<p>This project is a web-based simulation of an Emergency Dispatch System. It began as a simple C program and was converted into a fully interactive, client-side web application using HTML, CSS, and JavaScript. It demonstrates key programming concepts like priority queues, event handling, and dynamic DOM manipulation.</p>
+<h3 style="text-align: center; margin-top: 3rem;">How It Works</h3>
+<ol>
+<li><strong>Report Incident:</strong> Fill out the form in the app to add a new incident to the queue. Its priority is calculated instantly.</li>
+<li><strong>Dispatch Unit:</strong> Click the "Dispatch" button to find the highest-priority incident and assign the first available ambulance.</li>
+<li><strong>Update Unit:</strong> When a unit is free, enter its ID (e.g., "AMB-1") and mark it as "Available" to return it to the pool.</li>
+<li><strong>Data is Saved:</strong> All your changes are saved to your browser's `localStorage`, so you can refresh the page and continue.</li>
+</ol>
+</section>
+<section id="app" class="section-container">
+<h1>Dispatch Application</h1>
+<div class="app-container">
+<div class="panel" id="actions-panel">
+<h2>Report Incident</h2>
+<form id="report-form">
+<div>
+<label for="desc">Description:</label>
+<input type="text" id="desc" name="desc" placeholder="e.g., Building fire" required>
+</div>
+<div>
+<label for="loc">Location:</label>
+<input type="text" id="loc" name="loc" placeholder="e.g., 123 Main St" required>
+</div>
+<div>
+<label for="sev">Severity (1-10):</label>
+<input type="number" id="sev" name="sev" min="1" max="10" value="5" required>
+</div>
+<div>
+<label for="vic">Victims:</label>
+<input type="number" id="vic" name="vic" min="0" value="1" required>
+</div>
+<button type="submit">Report New Incident</button>
+</form>
+<hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border-color);">
+<h2>System Actions</h2>
+<button id="dispatch-btn">Dispatch Next Available Unit</button>
+<form id="update-form">
+<div>
+<label for="unit-id">Unit ID to Update:</label>
+<input type="text" id="unit-id" name="unit-id" placeholder="e.g., AMB-1" required>
+</div>
+<button type="submit">Mark Unit as AVAILABLE</button>
+</form>
+</div>
+<div class="panel" id="status-panel">
+<h3>Incident Queue (<span id="queue-count">0</span>)</h3>
+<ul id="incident-queue" class="status-list">
+</ul>
+<h3 style="margin-top: 20px;">Unit Status (<span id="unit-count">0</span>)</h3>
+<ul id="unit-status" class="status-list">
+</ul>
+</div>
+</div>
+</section>
+<footer>
+<p>&copy; 2025 Emergency Response Allocation System. A demo project.</p>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{const reportForm=document.getElementById("report-form");const dispatchBtn=document.getElementById("dispatch-btn");const updateForm=document.getElementById("update-form");const incidentList=document.getElementById("incident-queue");const unitList=document.getElementById("unit-status");const queueCount=document.getElementById("queue-count");const unitCount=document.getElementById("unit-count");const themeToggleBtn=document.getElementById("theme-toggle");const bodyEl=document.body;let incidentQueue,units,incidentIdCounter;function saveData(){localStorage.setItem('eds_incidents',JSON.stringify(incidentQueue));localStorage.setItem('eds_units',JSON.stringify(units));localStorage.setItem('eds_idCounter',incidentIdCounter.toString());}
+function loadData(){const savedIncidents=localStorage.getItem('eds_incidents');const savedUnits=localStorage.getItem('eds_units');const savedIdCounter=localStorage.getItem('eds_idCounter');if(savedIncidents){incidentQueue=JSON.parse(savedIncidents);incidentQueue.forEach(inc=>{inc.ts=new Date(inc.ts);});}else{incidentQueue=[];}
+if(savedUnits){units=JSON.parse(savedUnits);}else{units=[];for(let i=1;i<=20;i++){units.push({id:`AMB-${i}`,busy:false,incId:-1});}}
+if(savedIdCounter){incidentIdCounter=parseInt(savedIdCounter);}else{incidentIdCounter=1;}}
+function calcPriority(incident){const timeElapsed=(new Date()-incident.ts)/1000;return incident.sev*5+incident.vic*2+timeElapsed*0.1;}
+function findMaxPriorityIncident(){if(incidentQueue.length===0)return-1;let maxPrio=-1;let maxIdx=0;for(let i=0;i<incidentQueue.length;i++){const prio=calcPriority(incidentQueue[i]);if(prio>maxPrio){maxPrio=prio;maxIdx=i;}}
+return maxIdx;}
+function render(){if(!incidentList||!unitList)return;incidentList.innerHTML="";unitList.innerHTML="";queueCount.textContent=incidentQueue.length;unitCount.textContent=units.length;const sortedQueue=[...incidentQueue].map(inc=>({...inc,currentPrio:calcPriority(inc)})).sort((a,b)=>b.currentPrio-a.currentPrio);if(sortedQueue.length===0){incidentList.innerHTML="<li>No incidents waiting.</li>";}else{sortedQueue.forEach((inc)=>{const li=document.createElement("li");li.innerHTML=`
+<span class="incident-priority" style="color: ${inc.currentPrio>50?'var(--dispatched-color)':'var(--text-color)'};">Prio: ${inc.currentPrio.toFixed(2)}</span>
+<span class="incident-desc">(ID-${inc.id}) ${inc.desc} (Sev:${inc.sev}, Vic:${inc.vic})</span>`;incidentList.appendChild(li);});}
+units.forEach((unit)=>{const li=document.createElement("li");if(unit.busy){li.innerHTML=`
+<span>${unit.id}</span>
+<span class="unit-dispatched">Dispatched (Inc. ${unit.incId})</span>`;}else{li.innerHTML=`
+<span>${unit.id}</span>
+<span class="unit-available">Available</span>`;}
+unitList.appendChild(li);});}
+themeToggleBtn.addEventListener("click",()=>{bodyEl.classList.toggle("dark-mode");if(bodyEl.classList.contains('dark-mode')){localStorage.setItem('eds_theme','dark');}else{localStorage.setItem('eds_theme','light');}});reportForm.addEventListener("submit",(e)=>{e.preventDefault();const newIncident={id:incidentIdCounter++,desc:document.getElementById("desc").value,loc:document.getElementById("loc").value,sev:parseInt(document.getElementById("sev").value),vic:parseInt(document.getElementById("vic").value),ts:new Date(),};incidentQueue.push(newIncident);reportForm.reset();document.getElementById("sev").value="5";document.getElementById("vic").value="1";render();saveData();document.getElementById("desc").focus();});dispatchBtn.addEventListener("click",()=>{const freeUnitIndex=units.findIndex((unit)=>!unit.busy);if(freeUnitIndex===-1){alert("No available units.");return;}
+const maxIdx=findMaxPriorityIncident();if(maxIdx===-1){alert("No incidents waiting.");return;}
+const incidentToDispatch=incidentQueue.splice(maxIdx,1)[0];units[freeUnitIndex].busy=true;units[freeUnitIndex].incId=incidentToDispatch.id;alert(`Dispatching ${units[freeUnitIndex].id} to Incident ${incidentToDispatch.id} (${incidentToDispatch.desc})`);render();saveData();});updateForm.addEventListener("submit",(e)=>{e.preventDefault();const unitIdToUpdate=document.getElementById("unit-id").value.trim().toUpperCase();if(!unitIdToUpdate)return;const unit=units.find((u)=>u.id===unitIdToUpdate);if(unit){if(unit.busy){unit.busy=false;unit.incId=-1;alert(`${unit.id} marked as AVAILABLE.`);render();saveData();}else{alert(`${unit.id} is already available.`);}}else{alert(`Unit ${unitIdToUpdate} not found.`);}
+updateForm.reset();});const savedTheme=localStorage.getItem('eds_theme');if(savedTheme==='dark'){bodyEl.classList.add('dark-mode');themeToggleBtn.checked=true;}
+loadData();render();setInterval(render,3000);});
+</script>
+</body>
+</html>
